@@ -20,12 +20,12 @@ func PGRepoInit() *PGRepository {
 }
 
 func (r *PGRepository) GetByName(name string) (*User, error) {
-	user = User{
+	user := User{
 		Name: "Pavel",
 		Age:  11,
 	}
 
-	return user, nil
+	return &user, nil
 }
 
 type MSRepository struct {
@@ -39,12 +39,12 @@ func MSRepoInit() *MSRepository {
 }
 
 func (r *MSRepository) GetByName(name string) (*User, error) {
-	user = User{
+	user := User{
 		Name: "Pavel",
 		Age:  11,
 	}
 
-	return user, nil
+	return &user, nil
 }
 
 func main() {
