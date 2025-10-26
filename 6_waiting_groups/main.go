@@ -1,20 +1,16 @@
 package main
 
 import (
-	"fmt"
 	"sync"
 )
 
+func killCounter(wg *sync.WaitGroup) {
+	wg.Done()
+}
+
 func main() {
 	wg := sync.WaitGroup{}
-
-	for i := 0; i < 5; i++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			fmt.Println("test")
-		}()
-	}
-
+	wg.Add(1)
+	killCounter(&wg) // copy link to wg, not wg himself
 	wg.Wait()
 }
