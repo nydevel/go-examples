@@ -15,7 +15,7 @@ free: //this will give are mark to break outer loop from switch on line 18
 		select {
 		case <-s.shutdown:
 			fmt.Println("attemt to gracefull shutdown")
-			break free
+			break free //if remove 'free', loop will be infinite
 		default:
 		}
 	}
