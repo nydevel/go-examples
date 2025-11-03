@@ -2,13 +2,10 @@ package main
 
 import "fmt"
 
+// Generics
+
 func Print[T any](value T) {
 	fmt.Println(value)
-}
-
-// Constraints - ограничение на типы
-func Sum[T int | int64 | float64](a, b T) T {
-	return a + b
 }
 
 func main() {

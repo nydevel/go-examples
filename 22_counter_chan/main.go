@@ -5,6 +5,8 @@ import (
 	"sync"
 )
 
+// Асинхронный счетчик через каналы
+
 func main() {
 	wg := sync.WaitGroup{}
 	wg.Add(100)

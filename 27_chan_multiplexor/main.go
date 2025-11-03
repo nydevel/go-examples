@@ -5,6 +5,8 @@ import (
 	"sync"
 )
 
+// Мультиплексер каналов - n каналов будут направлены в один, выходной канал будет отдан сразу
+
 func multiplexer(chans ...chan int) chan int {
 	out := make(chan int)
 	wg := sync.WaitGroup{}
@@ -20,6 +22,7 @@ func multiplexer(chans ...chan int) chan int {
 		}(ch)
 	}
 
+	// Если не обернуть в горутину, то функция будет заблокирована и пока не отработает WaitGroup, канал не будет отдан
 	go func() {
 		wg.Wait()
 		close(out)

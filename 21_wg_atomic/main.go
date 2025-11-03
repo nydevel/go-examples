@@ -6,6 +6,8 @@ import (
 	"sync/atomic"
 )
 
+// Асинхронный счетчик с блокировкой через atomic - быстрее чем через Mutex, но поддерживает только простые типы
+
 func main() {
 	var counter int32
 	wg := sync.WaitGroup{} // remove race conditions

@@ -5,6 +5,8 @@ import (
 	"sync/atomic"
 )
 
+// Реализация SyncOnce - когда метод будет выполнен только один раз за все итерации
+
 type SyncOnce struct {
 	done int32
 	mut  sync.Mutex

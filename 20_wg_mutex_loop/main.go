@@ -5,6 +5,8 @@ import (
 	"sync"
 )
 
+// Асинхронный счетчик с блокировкой через Mutex
+
 func main() {
 	counter := 0
 	wg := sync.WaitGroup{} // remove race conditions
