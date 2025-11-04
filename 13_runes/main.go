@@ -7,4 +7,7 @@ func main() {
 
 	r[0] = '1'          // we can change rune
 	fmt.Printf("%c", r) //how to print rune character
+
+	s := "string"
+	fmt.Println(s[0])
 }
