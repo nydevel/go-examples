@@ -4,39 +4,78 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"sync"
 	"time"
 )
 
+type User struct {
+	Name string
+}
+
 func main() {
 	t := time.Now()
-	names, err := Do(context.Background(), []User{
-		{"Paul"}, {"Jack"}, {"Jack"}, {"Mike"},
+	names, err := Work(context.Background(), []User{
+		{"Vasya"}, {"Petya"}, {"Petya"},
 	})
+
 	if err != nil {
-		fmt.Println("Error: ", err)
+		fmt.Println("Error in context: ", err)
 		os.Exit(1)
 	}
-	fmt.Println("Result: ", names)
+
+	fmt.Println("Result names: ", names)
 	fmt.Println("Elapsed time: ", time.Since(t))
 }
 
-// fetch что-то дeлaeм по сeти.
-func fetch(_ context.Context, u User) (string, error) {
-	time.Sleep(time.Millisecond * 10) // имитaция зaдeржки
+func networkWork(_ context.Context, u User) (string, error) {
+	time.Sleep(time.Millisecond * 1)
 	return u.Name, nil
 }
 
-func Do(ctx context.Context, users []User) (map[string]int64, error) {
-	names := make(map[string]int64, len(users))
+func Work(ctx context.Context, users []User) (map[string]int64, error) {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	wg := sync.WaitGroup{}
+	mutex := sync.Mutex{}
+
+	names := make(map[string]int64)
+	var firstError error
 
 	for _, u := range users {
-		name, err := fetch(ctx, u)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
+		user := u
+		wg.Add(1)
 
-		names[name] = names[name] + 1
+		go func() {
+			defer wg.Done()
+
+			if ctx.Err() != nil {
+				return
+			}
+
+			name, err := networkWork(ctx, user)
+
+			mutex.Lock()
+			defer mutex.Unlock()
+
+			if firstError != nil {
+				return
+			}
+
+			if err != nil {
+				firstError = err
+				cancel()
+				return
+			}
+
+			names[name]++
+		}()
+	}
+
+	wg.Wait()
+
+	if firstError != nil {
+		return nil, firstError
 	}
 
 	return names, nil
